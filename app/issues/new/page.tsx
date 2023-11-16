@@ -1,9 +1,11 @@
 "use client";
-import { Button, TextField } from "@radix-ui/themes";
+import { Button, Callout, TextField } from "@radix-ui/themes";
 import SimpleMDE from "react-simplemde-editor";
 import { useForm, Controller } from "react-hook-form";
 import "easymde/dist/easymde.min.css";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { useState } from "react";
 
 interface IssueForm {
   title: string;
@@ -12,39 +14,54 @@ interface IssueForm {
 
 const NewIssuesPage = () => {
   const { register, control, handleSubmit } = useForm<IssueForm>();
-  // console.log(register("title"));
+  //   console.log("register:", register("title"));
   const router = useRouter();
+  const [error, setError] = useState("");
   return (
-    <form
-      className="max-w-xl space-y-3"
-      onSubmit={handleSubmit(async (data) => {
-        const response = await fetch("http://localhost:3000/api/issues", {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: {
-            "Contenet-Type": "application/json",
-          },
-        });
-        const body = await response.json();
-        console.log(body);
-        router.push("/issues");
-        // with axios:
-        // await axios.post('/api/issues', data)
-        // router.push("/issues");
-      })}
-    >
-      <TextField.Root>
-        <TextField.Input placeholder="Title" {...register("title")} />
-      </TextField.Root>
-      <Controller
-        name="description"
-        control={control}
-        render={({ field }) => (
-          <SimpleMDE placeholder="Description" {...field} />
-        )}
-      />
-      <Button>Submit New Issue</Button>
-    </form>
+    <div className="max-w-xl">
+      {error && (
+        <Callout.Root className="mb-5">
+          <Callout.Text>{error}</Callout.Text>
+        </Callout.Root>
+      )}
+      <form
+        className=" space-y-3"
+        onSubmit={handleSubmit(async (data) => {
+          try {
+            //   const response = await fetch("http://localhost:3000/api/issues", {
+            //     method: "POST",
+            //     body: JSON.stringify(data),
+            //     headers: {
+            //       "Content-Type": "application/json",
+            //     },
+            //   });
+            //   console.log("response", response.status);
+            //   const body = await response.json();
+            //   console.log("body:", body);
+            //   if (!response.ok) throw body;
+            //   router.push("/issues");
+            // with axios:
+            await axios.post("/api/issues", data);
+            router.push("/issues");
+          } catch (error) {
+            //   console.log("error", error);
+            setError("An unexpected error has occured");
+          }
+        })}
+      >
+        <TextField.Root>
+          <TextField.Input placeholder="Title" {...register("title")} />
+        </TextField.Root>
+        <Controller
+          name="description"
+          control={control}
+          render={({ field }) => (
+            <SimpleMDE placeholder="Description" {...field} />
+          )}
+        />
+        <Button>Submit New Issue</Button>
+      </form>
+    </div>
   );
 };
 
