@@ -27,6 +27,32 @@ const NewIssuesPage = () => {
   const router = useRouter();
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      //   const response = await fetch("http://localhost:3000/api/issues", {
+      //     method: "POST",
+      //     body: JSON.stringify(data),
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   });
+      //   console.log("response", response.status);
+      //   const body = await response.json();
+      //   console.log("body:", body);
+      //   if (!response.ok) throw body;
+      //   router.push("/issues");
+      // with axios:
+      setSubmitting(true);
+      await axios.post("/api/issues", data);
+      router.push("/issues");
+    } catch (error) {
+      //   console.log("error", error);
+      setSubmitting(false);
+      setError("An unexpected error has occured");
+    }
+  });
+
   return (
     <div className="max-w-xl">
       {error && (
@@ -34,33 +60,7 @@ const NewIssuesPage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className="space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            //   const response = await fetch("http://localhost:3000/api/issues", {
-            //     method: "POST",
-            //     body: JSON.stringify(data),
-            //     headers: {
-            //       "Content-Type": "application/json",
-            //     },
-            //   });
-            //   console.log("response", response.status);
-            //   const body = await response.json();
-            //   console.log("body:", body);
-            //   if (!response.ok) throw body;
-            //   router.push("/issues");
-            // with axios:
-            setSubmitting(true);
-            await axios.post("/api/issues", data);
-            router.push("/issues");
-          } catch (error) {
-            //   console.log("error", error);
-            setSubmitting(false);
-            setError("An unexpected error has occured");
-          }
-        })}
-      >
+      <form className="space-y-3" onSubmit={onSubmit}>
         <TextField.Root>
           <TextField.Input placeholder="Title" {...register("title")} />
         </TextField.Root>
