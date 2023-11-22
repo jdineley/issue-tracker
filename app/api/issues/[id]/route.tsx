@@ -6,7 +6,6 @@ export async function PATCH(
   request: NextRequest,
   { params: { id } }: { params: { id: string } }
 ) {
-  console.log("Patch api hit");
   const body = await request.json();
   const validation = issueSchema.safeParse(body);
   if (!validation.success)
