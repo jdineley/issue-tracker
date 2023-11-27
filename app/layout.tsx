@@ -29,7 +29,7 @@ export default function RootLayout({
           <Theme accentColor="sky">
             <NavBar />
             <Container>
-              <main className="p-5">{children}</main>
+              <main className="py-5">{children}</main>
             </Container>
           </Theme>
         </AuthProvider>
