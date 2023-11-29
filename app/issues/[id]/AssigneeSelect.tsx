@@ -1,13 +1,13 @@
 "use client";
 
-import { User } from "@prisma/client";
+import { Issue, User } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Skeleton } from "@/app/components";
 
-const AssigneeSelect = () => {
+const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   const {
     data: users,
     error,
@@ -33,12 +33,26 @@ const AssigneeSelect = () => {
   //   fetchUsers();
   // }, []);
 
+  const handleChange = (userId: string) => {
+    try {
+      const updatedIssue = axios.patch(`/api/issues/${issue.id}`, {
+        assignedToUserId: userId === "unassigned" ? null : userId,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <Select.Root>
+    <Select.Root
+      onValueChange={(userId) => handleChange(userId)}
+      defaultValue={issue.assignedToUserId || "unassigned"}
+    >
       <Select.Trigger placeholder="Assign..." />
-      <Select.Content>
+      <Select.Content onClick={() => console.log("Ive changed")}>
         <Select.Group>
           <Select.Label>Suggestions</Select.Label>
+          <Select.Item value="unassigned">Unassigned</Select.Item>
           {users?.map((user) => (
             <Select.Item key={user.id} value={user.id}>
               {user.name}
