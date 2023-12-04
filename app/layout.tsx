@@ -30,7 +30,7 @@ export default function RootLayout({
           <AuthProvider>
             <Theme accentColor="sky">
               <NavBar />
-              <Container>
+              <Container mx="5">
                 <main className="py-5">{children}</main>
               </Container>
             </Theme>
