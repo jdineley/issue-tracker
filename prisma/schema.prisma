@@ -6,9 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  // relationMode = "prisma"
 }
 
 model Issue {
@@ -21,7 +21,7 @@ model Issue {
   assignedToUserId String?  @db.VarChar(255)
   assignedToUser   User?    @relation(fields: [assignedToUserId], references: [id])
 
-  @@index([assignedToUserId])
+  // @@index([assignedToUserId])
 }
 
 enum Status {
@@ -45,9 +45,9 @@ model Account {
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // @@index([userId])
 
   @@unique([provider, providerAccountId])
-  @@index([userId])
 }
 
 model Session {
@@ -57,7 +57,7 @@ model Session {
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
+  // @@index([userId])
 }
 
 model User {
