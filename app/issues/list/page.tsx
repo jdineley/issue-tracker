@@ -1,12 +1,8 @@
 import prisma from "@/prisma/client";
-import { Flex, Table } from "@radix-ui/themes";
+import { Flex } from "@radix-ui/themes";
 // import delay from "delay";
-import { IssueStatusBadge, Link } from "@/app/components/index";
 import IssuesActions from "./IssuesActions";
-import { Issue, Status } from "@prisma/client";
-import NextLink from "next/link";
-import { ArrowUpIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
+import { Status } from "@prisma/client";
 import Pagination from "@/app/components/Pagination";
 import IssueTable, { IssueQuery, columnsNames } from "./IssueTable";
 import { Metadata } from "next";
@@ -21,9 +17,9 @@ const IssuesPage = async ({ searchParams }: Props) => {
     ? searchParams.status
     : undefined;
   const where = { status };
-
+  // console.log(searchParams.orderBy);
   const orderBy = columnsNames.includes(searchParams.orderBy)
-    ? { [searchParams.orderBy]: "asc" }
+    ? { [searchParams.orderBy]: `${searchParams.sortOrder}` }
     : undefined;
 
   const page = parseInt(searchParams.page) || 1;

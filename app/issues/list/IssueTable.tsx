@@ -1,15 +1,18 @@
 import { IssueStatusBadge } from "@/app/components";
-import { ArrowUpIcon } from "@radix-ui/react-icons";
+import { ArrowUpIcon, ArrowDownIcon } from "@radix-ui/react-icons";
 import { Table } from "@radix-ui/themes";
-import Link from "next/link";
+import Link from "@/app/components/Link";
 import React from "react";
 import NextLink from "next/link";
 import { Issue, Status } from "@prisma/client";
+import classnames from "classnames";
+import { useState, useRef } from "react";
 
 export interface IssueQuery {
   status: Status;
   orderBy: keyof Issue;
   page: string;
+  sortOrder: "asc" | "desc";
 }
 
 interface Props {
@@ -18,6 +21,11 @@ interface Props {
 }
 
 const IssueTable = ({ searchParams, issues }: Props) => {
+  const toggleOrder = () => {
+    return !searchParams.sortOrder || searchParams.sortOrder === "desc"
+      ? "asc"
+      : "desc";
+  };
   return (
     <Table.Root variant="surface">
       <Table.Header>
@@ -29,14 +37,22 @@ const IssueTable = ({ searchParams, issues }: Props) => {
             >
               <NextLink
                 href={{
-                  query: { ...searchParams, orderBy: column.value },
+                  query: {
+                    ...searchParams,
+                    orderBy: column.value,
+                    sortOrder: toggleOrder(),
+                  },
                 }}
               >
                 {column.label}
               </NextLink>
-              {column.value === searchParams.orderBy && (
-                <ArrowUpIcon className="inline" />
-              )}
+
+              {column.value === searchParams.orderBy &&
+                (searchParams.sortOrder === "asc" ? (
+                  <ArrowUpIcon className="inline" />
+                ) : (
+                  <ArrowDownIcon className="inline" />
+                ))}
             </Table.ColumnHeaderCell>
           ))}
         </Table.Row>
